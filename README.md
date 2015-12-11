@@ -1,7 +1,7 @@
 Getting and Cleaning Data
 ==========================
 
-### Mark Addinall - 2015
+### Mark Addinall - December 2015
 
 This is part of the Johns Hopkins courses that make up the Data Scientist speciality stream.
 
