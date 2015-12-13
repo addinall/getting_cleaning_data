@@ -1,3 +1,14 @@
+## CAPTAIN SLOG
+## vim: set expandtab tabstop=4 shiftwidth=4 autoindent:
+## File         : tidy-final.R
+## System       : Johns Hopkins Getting and Cleaning Data
+## Date         : December 2015
+## Author       : Mark Addinall
+## Synopsis     : This file is part of the course work
+##                assignments for the Johns Hopkins
+##                series of Data Science units.
+##                This unit is Getting and cleaning Data 
+##
 # Append two more function calls to accomplish the following:
 #
 # 1. Use group_by() (from dplyr) to group the data by part and
