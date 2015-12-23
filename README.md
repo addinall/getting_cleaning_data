@@ -13,7 +13,16 @@ The program in here, run_analysis.R carries out the following functions.
 - Appropriately labels the data set with descriptive variable names. 
 - Creates a second, independent tidy data set with the average of each variable for each activity and each subject. 
 
-The data used for this assignment is described:
+The data used for this assignment is described here and more completely in Codebook.md.
+
+The datafiles are stored in the working directory 
+
+```
+data\UCI
+data\UCI\test
+data\UCI\training
+```
+
 
 
 ## Human Activity Recognition Using Smartphones Data Set 

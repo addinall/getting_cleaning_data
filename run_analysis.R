@@ -29,7 +29,7 @@ error <- function(error_message) {
 #-----------------
 success(message) {
 
-    # happy logger and colse application
+    # happy logger and close application
 
 }
 
