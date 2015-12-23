@@ -21,6 +21,10 @@
 ##              character to break up distinct words as opposed to strining them all
 ##              together.  I thin if the approach is consistant, then it meets "tidy data"
 ##              constraints.
+##
+##              The tidy data is somewhat tidier.  Unfortunately, statistically meaningless.
+##              Without a statistical product description from a specification or a customer
+##              I am at a bit of a loss what to put in the file.  So I stuck in a summary.
 
 
 
@@ -87,9 +91,67 @@ combine_datasets <- function() {
     # Christmas Eve.}
 
     column_names    <- colnames(table_combined)
-    
-    #table_combined  <- filter(table_combined, grepl("activity"
+   
+    # get a list of all the thingies that mention mean or standard deviation
+    # no-one seems quite sure about what to include, and the specification
+    # doesn't really say.
 
+
+    boolean_filter  <- (grepl("activity",column_names)  | 
+                        grepl("subject",column_names)   | 
+                        grepl("mean",column_names)    | 
+                        grepl("std",column_names));
+
+    table_combined  <- table_combined[boolean_filter == TRUE]
+
+    # this is the result.  looks like a load of bleh to me.
+
+    # names(new_table)
+    # [1] "activity_id"                     "subject_id"                     
+    # [3] "tBodyAcc-mean()-X"               "tBodyAcc-mean()-Y"              
+    # [5] "tBodyAcc-mean()-Z"               "tBodyAcc-std()-X"               
+    # [7] "tBodyAcc-std()-Y"                "tBodyAcc-std()-Z"               
+    # [9] "tGravityAcc-mean()-X"            "tGravityAcc-mean()-Y"           
+    # [11] "tGravityAcc-mean()-Z"            "tGravityAcc-std()-X"            
+    # [13] "tGravityAcc-std()-Y"             "tGravityAcc-std()-Z"            
+    # [15] "tBodyAccJerk-mean()-X"           "tBodyAccJerk-mean()-Y"          
+    # [17] "tBodyAccJerk-mean()-Z"           "tBodyAccJerk-std()-X"           
+    # [19] "tBodyAccJerk-std()-Y"            "tBodyAccJerk-std()-Z"           
+    # [21] "tBodyGyro-mean()-X"              "tBodyGyro-mean()-Y"             
+    # [23] "tBodyGyro-mean()-Z"              "tBodyGyro-std()-X"              
+    # [25] "tBodyGyro-std()-Y"               "tBodyGyro-std()-Z"              
+    # [27] "tBodyGyroJerk-mean()-X"          "tBodyGyroJerk-mean()-Y"         
+    # [29] "tBodyGyroJerk-mean()-Z"          "tBodyGyroJerk-std()-X"          
+    # [31] "tBodyGyroJerk-std()-Y"           "tBodyGyroJerk-std()-Z"          
+    # [33] "tBodyAccMag-mean()"              "tBodyAccMag-std()"              
+    # [35] "tGravityAccMag-mean()"           "tGravityAccMag-std()"           
+    # [37] "tBodyAccJerkMag-mean()"          "tBodyAccJerkMag-std()"          
+    # [39] "tBodyGyroMag-mean()"             "tBodyGyroMag-std()"             
+    # [41] "tBodyGyroJerkMag-mean()"         "tBodyGyroJerkMag-std()"         
+    # [43] "fBodyAcc-mean()-X"               "fBodyAcc-mean()-Y"              
+    # [45] "fBodyAcc-mean()-Z"               "fBodyAcc-std()-X"               
+    # [47] "fBodyAcc-std()-Y"                "fBodyAcc-std()-Z"               
+    # [49] "fBodyAcc-meanFreq()-X"           "fBodyAcc-meanFreq()-Y"          
+    # [51] "fBodyAcc-meanFreq()-Z"           "fBodyAccJerk-mean()-X"          
+    # [53] "fBodyAccJerk-mean()-Y"           "fBodyAccJerk-mean()-Z"          
+    # [55] "fBodyAccJerk-std()-X"            "fBodyAccJerk-std()-Y"           
+    # [57] "fBodyAccJerk-std()-Z"            "fBodyAccJerk-meanFreq()-X"      
+    # [59] "fBodyAccJerk-meanFreq()-Y"       "fBodyAccJerk-meanFreq()-Z"      
+    # [61] "fBodyGyro-mean()-X"              "fBodyGyro-mean()-Y"             
+    # [63] "fBodyGyro-mean()-Z"              "fBodyGyro-std()-X"              
+    # [65] "fBodyGyro-std()-Y"               "fBodyGyro-std()-Z"              
+    # [67] "fBodyGyro-meanFreq()-X"          "fBodyGyro-meanFreq()-Y"         
+    # [69] "fBodyGyro-meanFreq()-Z"          "fBodyAccMag-mean()"             
+    # [71] "fBodyAccMag-std()"               "fBodyAccMag-meanFreq()"         
+    # [73] "fBodyBodyAccJerkMag-mean()"      "fBodyBodyAccJerkMag-std()"      
+    # [75] "fBodyBodyAccJerkMag-meanFreq()"  "fBodyBodyGyroMag-mean()"        
+    # [77] "fBodyBodyGyroMag-std()"          "fBodyBodyGyroMag-meanFreq()"    
+    # [79] "fBodyBodyGyroJerkMag-mean()"     "fBodyBodyGyroJerkMag-std()"     
+    # [81] "fBodyBodyGyroJerkMag-meanFreq()" "activity_description"           
+ 
+
+    table_combined  <- merge(table_combined, table_activity, 
+                             by = "activity_id", all.X = TRUE)
     return(table_combined)
 
 }
@@ -109,7 +171,6 @@ rename_activities <- function() {
     colnames(table_activity)    <<- c("activity_id", "activity_description")
 
     colnames(table_trainx)      <<- table_features[,2] 
-    print(colnames(table_trainx)) 
     colnames(table_trainy)      <<- "activity_id"
     colnames(table_strain)      <<- "subject_id"
 
@@ -124,13 +185,37 @@ rename_variables <- function() {
 
     # give the newly merged data set some descritive variable names
 
+    column_names     <<- colnames(new_table)
+
+    # This still has hundreds of entries.
+
+    for (i in 1:length(column_names)) {
+        column_names[i] <<-  gsub("\\()","",column_names[i])
+        column_names[i] <<-  gsub("^(f)","Frequency",column_names[i])
+        column_names[i] <<-  gsub("^(t)","Time",column_names[i])
+    };
+
+    colnames(new_table) <<- column_names;
 }
 
 
 #--------------------------------
 create_tidy_data <- function() {
 
-    # processing complete, write a tidy dataset to disk.
+    # processing complete, write a tidyish dataset to disk.
+
+    # now, I make no pretence at understanding what this summary
+    # is about because I don't really understand the data and
+    # what it is doing.  WTF is a FrequencyBodyBodyGyroJerkMag-mean?
+    # I don't have a clue.  The spec is rather vague on what needs to
+    # go in this tidy file.  It mentions the means and standard
+    # deviations, the means of means I suppose would be more correct,
+    # sp it SEEMS this function satisfies the specification requirements.
+    # If is doesn't, apologies, I must have misunderstood the specification.
+
+
+    tidy <- summary(new_table)
+    write.table(tidy, 'tidy.txt', row.names=FALSE, sep='\t\t');
 
 }
 
@@ -154,7 +239,7 @@ if (! file_exists("tidy.rdata")) {
     # data.tables GLOBAL.  In R this saves a lot of faffing around
     # with scope / environment considerations.
 
-    print("checking file integrity \n")
+    print("checking file integrity .......")
 
     if (!  (file_exists("features.txt")             &&
             file_exists("activity_labels.txt")      &&
@@ -175,17 +260,26 @@ if (! file_exists("tidy.rdata")) {
 
     # load em up
     print("Loading tables .....")
-
+    print("")
+    print("Features   .....")
     table_features  <- read.table("features.txt")
+    print("Activity Labels.....")
     table_activity  <- read.table("activity_labels.txt")
+    print("Training Data X   .....")
 
     table_trainx    <- read.table("train/X_train.txt")
+    print("Training Data Y   .....")
     table_trainy    <- read.table("train/y_train.txt")
+    print("Training Subjects    .....")
     table_strain    <- read.table("train/subject_train.txt")
+    print("Test Data X.....")
 
     table_testx     <- read.table("test/X_test.txt")
+    print("Test Data Y.....")
     table_testy     <- read.table("test/y_test.txt")
+    print("Test Subject Data.....")
     table_stest     <- read.table("test/subject_test.txt")
+    print("Merging Test and Training Data   .....")
 
 }
 
@@ -193,8 +287,7 @@ rename_activities()
 new_table <- combine_datasets()
 rename_variables()
 create_tidy_data()
-print("Data set created ")
-head(new_table)
+print("Data set created in ./data/UCI/tidy.txt   -  Remove this file to re-run this script.  Thank you.")
 
 
 # --------------- EOF -----------------------------------

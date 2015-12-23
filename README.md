@@ -22,8 +22,14 @@ data\UCI
 data\UCI\test
 data\UCI\training
 ```
+The program check for the existance of a file:
+```
+data\UCI\tidy.txt
+```
 
-
+If this file exists, the program will not produce a new one.  It must be deleted for it to run.
+This script should be started from the root here.  It changes the working directory to the
+data area when executing.
 
 ## Human Activity Recognition Using Smartphones Data Set 
 
@@ -57,9 +63,6 @@ N/A
 
 Classification, Clustering
 
-### Missing Values?
-
-N/A
 
 ### Number of Web Hits:
 
